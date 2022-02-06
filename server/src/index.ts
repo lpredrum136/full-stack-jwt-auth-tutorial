@@ -43,7 +43,10 @@ const main = async () => {
 
 	await apolloServer.start()
 
-	apolloServer.applyMiddleware({ app })
+	apolloServer.applyMiddleware({
+		app,
+		cors: { origin: 'http://localhost:3000', credentials: true }
+	})
 
 	const PORT = process.env.PORT || 4000
 

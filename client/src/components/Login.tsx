@@ -1,10 +1,12 @@
 import { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLoginMutation } from '../generated/graphql'
+import JWTManager from '../utils/jwt'
 
 const Login = () => {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
+	const [error, setError] = useState('')
 	const navigate = useNavigate()
 
 	const [login, _] = useLoginMutation()
@@ -16,29 +18,32 @@ const Login = () => {
 		})
 
 		if (response.data?.login.success) {
-			console.log('ACCESS TOKEN', response.data.login.accessToken)
+			JWTManager.setToken(response.data.login.accessToken as string)
 			navigate('..')
 		} else {
-			console.log('ERROR', response.data?.login.message)
+			if (response.data?.login.message) setError(response.data.login.message)
 		}
 	}
 
 	return (
-		<form style={{ marginTop: '1rem' }} onSubmit={onSubmit}>
-			<input
-				type='text'
-				value={username}
-				placeholder='Username'
-				onChange={event => setUsername(event.target.value)}
-			/>
-			<input
-				type='password'
-				value={password}
-				placeholder='Password'
-				onChange={event => setPassword(event.target.value)}
-			/>
-			<button type='submit'>Login</button>
-		</form>
+		<>
+			{error && <h3 style={{ color: 'red' }}>{error}</h3>}
+			<form style={{ marginTop: '1rem' }} onSubmit={onSubmit}>
+				<input
+					type='text'
+					value={username}
+					placeholder='Username'
+					onChange={event => setUsername(event.target.value)}
+				/>
+				<input
+					type='password'
+					value={password}
+					placeholder='Password'
+					onChange={event => setPassword(event.target.value)}
+				/>
+				<button type='submit'>Login</button>
+			</form>
+		</>
 	)
 }
 
