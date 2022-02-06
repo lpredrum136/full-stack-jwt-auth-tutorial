@@ -12,6 +12,7 @@ import {
 } from 'apollo-server-core'
 import { GreetingResolver } from './resolvers/greeting'
 import { UserResolver } from './resolvers/user'
+import { Context } from './types/Context'
 
 const main = async () => {
 	await createConnection({
@@ -37,7 +38,7 @@ const main = async () => {
 			ApolloServerPluginDrainHttpServer({ httpServer }),
 			ApolloServerPluginLandingPageGraphQLPlayground
 		],
-		context: ({ req, res }) => ({ req, res })
+		context: ({ req, res }): Pick<Context, 'req' | 'res'> => ({ req, res })
 	})
 
 	await apolloServer.start()
