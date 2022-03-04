@@ -13,6 +13,8 @@ import {
 import { GreetingResolver } from './resolvers/greeting'
 import { UserResolver } from './resolvers/user'
 import { Context } from './types/Context'
+import refreshTokenRouter from './routes/refreshTokenRouter'
+import cookieParser from 'cookie-parser'
 
 const main = async () => {
 	await createConnection({
@@ -26,6 +28,10 @@ const main = async () => {
 	})
 
 	const app = express()
+
+	app.use(cookieParser())
+
+	app.use('/refresh_token', refreshTokenRouter)
 
 	const httpServer = createServer(app)
 
