@@ -16,22 +16,32 @@ const JWTManager = () => {
 		return true
 	}
 
-	const getRefreshToken = async () => {
-		const response = await fetch('http://localhost:4000/refresh_token', {
-			credentials: 'include'
-		})
-		const data = (await response.json()) as {
-			success: boolean
-			accessToken: string
-		}
+	const deleteToken = () => {
+		inMemoryToken = null
+	}
 
-		setToken(data.accessToken)
-		return true
+	const getRefreshToken = async () => {
+		try {
+			const response = await fetch('http://localhost:4000/refresh_token', {
+				credentials: 'include'
+			})
+			const data = (await response.json()) as {
+				success: boolean
+				accessToken: string
+			}
+
+			setToken(data.accessToken)
+			return true
+		} catch (error) {
+			console.log('UNAUTHENTICATED', error)
+			deleteToken()
+			return false
+		}
 	}
 
 	const setRefreshTokenTimeout = (delay: number) => {
 		// 5s before token expires
-		window.setTimeout(getRefreshToken, delay * 1000 - 5000)
+		window.setTimeout(getRefreshToken, delay * 1000 - 10000)
 	}
 
 	return { getToken, setToken, getRefreshToken }

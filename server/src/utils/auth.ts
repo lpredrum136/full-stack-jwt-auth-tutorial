@@ -11,7 +11,7 @@ export const createToken = (type: 'accessToken' | 'refreshToken', user: User) =>
 			? (process.env.ACCESS_TOKEN_SECRET as Secret)
 			: (process.env.REFRESH_TOKEN_SECRET as Secret),
 		{
-			expiresIn: type === 'accessToken' ? '10s' : '60m'
+			expiresIn: type === 'accessToken' ? '15s' : '60m'
 		}
 	)
 
