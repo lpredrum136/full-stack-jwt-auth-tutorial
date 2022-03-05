@@ -2,22 +2,31 @@ import jwtDecode, { JwtPayload } from 'jwt-decode'
 
 const JWTManager = () => {
 	let inMemoryToken: string | null = null
-	// let refreshTokenTimeoutId: number | null = null
+	let refreshTokenTimeoutId: number | null = null
+	let userId: number | null = null
 
 	const getToken = () => inMemoryToken
+
+	const getUserId = () => userId
 
 	const setToken = (accessToken: string) => {
 		inMemoryToken = accessToken
 
 		// Decode and set countdown to refresh
 		const decoded = jwtDecode<JwtPayload & { userId: number }>(accessToken)
-
+		userId = decoded.userId
 		setRefreshTokenTimeout((decoded.exp as number) - (decoded.iat as number))
 		return true
 	}
 
+	const abortRefreshToken = () => {
+		if (refreshTokenTimeoutId) window.clearTimeout(refreshTokenTimeoutId)
+	}
+
 	const deleteToken = () => {
 		inMemoryToken = null
+		abortRefreshToken()
+		return true
 	}
 
 	const getRefreshToken = async () => {
@@ -41,10 +50,13 @@ const JWTManager = () => {
 
 	const setRefreshTokenTimeout = (delay: number) => {
 		// 5s before token expires
-		window.setTimeout(getRefreshToken, delay * 1000 - 10000)
+		refreshTokenTimeoutId = window.setTimeout(
+			getRefreshToken,
+			delay * 1000 - 5000
+		)
 	}
 
-	return { getToken, setToken, getRefreshToken }
+	return { getToken, setToken, getRefreshToken, deleteToken, getUserId }
 }
 
 export default JWTManager()

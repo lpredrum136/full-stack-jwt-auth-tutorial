@@ -1,16 +1,16 @@
-import './App.css'
+import { useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Layout from './components/Layout'
+import './App.css'
 import Home from './components/Home'
+import Layout from './components/Layout'
 import Login from './components/Login'
 import Profile from './components/Profile'
 import Register from './components/Register'
-import { useContext, useEffect, useState } from 'react'
-import { AuthContext } from './contexts/AuthContext'
+import { useAuthContext } from './contexts/AuthContext'
 
 function App() {
 	const [loading, setLoading] = useState(true)
-	const { checkAuth } = useContext(AuthContext)
+	const { checkAuth } = useAuthContext()
 
 	useEffect(() => {
 		const authenticate = async () => {

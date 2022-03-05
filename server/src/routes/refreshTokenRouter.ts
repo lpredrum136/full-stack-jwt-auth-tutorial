@@ -20,7 +20,10 @@ router.get('/', async (req, res) => {
 
 		const existingUser = await User.findOne(decodedUser.userId)
 
-		if (!existingUser) {
+		if (
+			!existingUser ||
+			existingUser.tokenVersion !== decodedUser.tokenVersion
+		) {
 			return res.sendStatus(401)
 		}
 
