@@ -102,7 +102,12 @@ export class UserResolver {
 
 		await existingUser.save()
 
-		res.clearCookie(process.env.REFRESH_TOKEN_COOKIE_NAME as string)
+		res.clearCookie(process.env.REFRESH_TOKEN_COOKIE_NAME as string, {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'lax',
+			path: '/refresh_token'
+		})
 
 		return { code: 200, success: true }
 	}
