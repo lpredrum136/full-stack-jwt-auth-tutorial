@@ -19,7 +19,7 @@ function App() {
 		}
 
 		authenticate()
-	}, [])
+	}, [checkAuth])
 
 	if (loading) return <h1>LOADING....</h1>
 	return (

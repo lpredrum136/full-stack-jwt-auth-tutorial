@@ -1,6 +1,8 @@
 import jwtDecode, { JwtPayload } from 'jwt-decode'
 
 const JWTManager = () => {
+	const LOGOUT_EVENT_NAME = 'jwt-logout'
+
 	let inMemoryToken: string | null = null
 	let refreshTokenTimeoutId: number | null = null
 	let userId: number | null = null
@@ -26,8 +28,14 @@ const JWTManager = () => {
 	const deleteToken = () => {
 		inMemoryToken = null
 		abortRefreshToken()
+		window.localStorage.setItem(LOGOUT_EVENT_NAME, Date.now().toString())
 		return true
 	}
+
+	// To logout all tabs (nullify inMemoryToken)
+	window.addEventListener('storage', event => {
+		if (event.key === LOGOUT_EVENT_NAME) inMemoryToken = null
+	})
 
 	const getRefreshToken = async () => {
 		try {
